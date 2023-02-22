@@ -5,7 +5,7 @@ const {
     loginUser,
     getUser,
     getUsers
-} = require('../controllers/userController');
+} = require('../controllers/usersController');
 
 const { protect } = require('../middleware/authMiddleware');
 const { protectAdmin } = require('../middleware/adminAuthMiddleware');

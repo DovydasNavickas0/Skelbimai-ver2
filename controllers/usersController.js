@@ -13,15 +13,13 @@ const registerUser = asyncHandler (async (req, res) => {
     
     //check if everything is filled in
     if(!name || !email || !password) {
-        res.status(400)
-        throw new Error("Please fill in all the fields")
+        res.status(400).send("Please fill in all the fields")
     }
 
     //check if user exists
     const userExists = await User.findOne({ email })
     if (userExists) {
-        res.status(400)
-        throw new Error('User already exists')
+        res.status(400).send('User already exists')
     }
 
     // Hash the pasword
@@ -45,33 +43,31 @@ const registerUser = asyncHandler (async (req, res) => {
         })
     }
     else {
-        res.status(400)
-        throw new Error('Invalid user data')
+        res.status(400).send('Invalid user data')
     }
 })
 
 //-----------------------------------------------
 
-// @desc Login a user
+// @desc Login for a user
 // @route POST /api/users/login
 // @access PUBLIC
 
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
   
-    const user = await User.findOne({ email })
+    const Selectuser = await User.findOne({ email })
   
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (Selectuser && (await bcrypt.compare(password, user.password))) {
       res.json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
-        role: user.role
+        _id: Selectuser.id,
+        name: Selectuser.name,
+        email: Selectuser.email,
+        token: generateToken(Selectuser._id),
+        role: Selectuser.role
       })
     } else {
-      res.status(400)
-      throw new Error('Invalid credentials')
+      res.status(400).send('Invalid credentials')
     }
   })
 

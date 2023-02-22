@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
     setAd, getAds, updateAd, deleteAd
-} = require('../controllers/adController');
+} = require('../controllers/adsController');
 
 const { protect } = require('../middleware/authMiddleware');
 
