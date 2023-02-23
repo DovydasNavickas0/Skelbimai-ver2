@@ -12,7 +12,7 @@ const protectAdmin = asyncHandler(async (req, res, next) => {
             res.send(401, notAuthorizedMessage);
         }
     } else {
-        res.send(status, response);
+        res.status(status).send(response);
     }
 });
 

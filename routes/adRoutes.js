@@ -8,6 +8,6 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 router.route('/').get(protect, getAds).post(protect, setAd);
-router.route('/:id').put(protect, updateAd).delete(protect, deleteAd);
+//router.route('/:id').put(protect, updateAd).delete(protect, deleteAd);
 
 module.exports = router;

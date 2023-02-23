@@ -9,6 +9,7 @@ const asyncHandler = require('express-async-handler')
 
 const registerUser = asyncHandler (async (req, res) => {
 
+    //gets stuff from body
     const { name, email, password } = req.body
     
     //check if everything is filled in
@@ -33,6 +34,8 @@ const registerUser = asyncHandler (async (req, res) => {
         password: hashedPasswd,
         role: 'base'
     })
+
+    //uploads to mongodb
     if (user) {
         res.status(201).json({
             _id: user.id,
@@ -54,11 +57,14 @@ const registerUser = asyncHandler (async (req, res) => {
 // @access PUBLIC
 
 const loginUser = asyncHandler(async (req, res) => {
+
+    //gets stuff from body
     const { email, password } = req.body
   
     const Selectuser = await User.findOne({ email })
   
-    if (Selectuser && (await bcrypt.compare(password, user.password))) {
+    //the meat / the thing that fetches the user with that email if passwd is correct
+    if (Selectuser && (await bcrypt.compare(password, Selectuser.password))) {
       res.json({
         _id: Selectuser.id,
         name: Selectuser.name,
@@ -70,52 +76,6 @@ const loginUser = asyncHandler(async (req, res) => {
       res.status(400).send('Invalid credentials')
     }
   })
-
-//-----------------------------------------------
-
-// @desc Get user data (singulair)
-// @route GET /api/users/user
-// @access PRIVATE
-
-const getUser = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user)
-})
-
-//-----------------------------------------------
-
-// @desc Get users data (multiple)
-// @route GET /api/users/list
-// @access PRIVATE
-
-const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.aggregate([
-      {
-        $lookup: {
-          from: "ads",
-          localField: "_id",
-          foreignField: "user",
-          as: "ads"
-        }
-      },
-      {
-        $match: { role: 'base' }
-      },
-      {
-        $unset: [
-          "password",
-          "createdAt",
-          "updatedAt",
-          "ads.createdAt",
-          "ads.updatedAt",
-          "ads.__v",
-          "__v"
-        ]
-      }
-    ])
-  
-    res.status(200).json(users)
-  })
-  
 
 //-----------------------------------------------
 
@@ -132,6 +92,4 @@ const generateToken = id => {
 module.exports = {
     registerUser,
     loginUser,
-    getUser,
-    getUsers
 }

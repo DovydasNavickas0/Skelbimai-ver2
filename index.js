@@ -7,7 +7,7 @@ app.use(express.json())
 const cors = require('cors');
 const port = process.env.PORT || 3001
 
-//const errorHandler = require('./middleware/errorMiddleware')
+const { errorHandler } = require('./middleware/errorMiddleware')
 
 connectDB();
 
@@ -17,9 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
 app.use('/api/ads', require('./routes/adRoutes'));
-app.use('.qpi/users', require('./routes/userRoutes'))
+app.use('/api/users', require('./routes/userRoutes'))
 
-//app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(port, ()=> console.log(`Server is running on port ${port}`))
 
