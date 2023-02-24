@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/api/ads', require('./routes/adRoutes'));
 app.use('/api/users', require('./routes/userRoutes'))
 
-app.use(errorHandler);
+//app.use(errorHandler);
 
 app.listen(port, ()=> console.log(`Server is running on port ${port}`))
 

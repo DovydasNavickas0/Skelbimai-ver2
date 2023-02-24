@@ -75,7 +75,54 @@ const loginUser = asyncHandler(async (req, res) => {
     } else {
       res.status(400).send('Invalid credentials')
     }
+})
+
+//-----------------------------------------------
+
+// @desc Get user data (singulair)
+// @route GET /api/users/user
+// @access PRIVATE
+
+//gets a specific user
+const getUser = asyncHandler(async (req, res) => {
+  res.status(200).json(req.user)
+})
+
+//-----------------------------------------------
+
+// @desc Get users data (multiple)
+// @route GET /api/users/list
+// @access PRIVATE
+
+const getUsers = asyncHandler(async (req, res) => {
+    const users = await User.aggregate([
+      {
+        $lookup: {
+          from: "ads",
+          localField: "_id",
+          foreignField: "user",
+          as: "ads"
+        }
+      },
+      {
+        $match: { role: 'base' }
+      },
+      {
+        $unset: [
+          "password",
+          "createdAt",
+          "updatedAt",
+          "ads.createdAt",
+          "ads.updatedAt",
+          "ads.__v",
+          "__v"
+        ]
+      }
+    ])
+  
+    res.status(200).json(users)
   })
+  
 
 //-----------------------------------------------
 
@@ -92,4 +139,6 @@ const generateToken = id => {
 module.exports = {
     registerUser,
     loginUser,
+    getUser,
+    getUsers
 }

@@ -22,7 +22,7 @@ const setAd = asyncHandler(async (req, res) => {
 //-----------------------------------------------
 
 // @desc Get goals / gets the ads that exist
-// @route GET /api/goals
+// @route GET /api/ads
 // @access PRIVATE
 
 const getAds = asyncHandler(async (req, res) => {
@@ -32,8 +32,67 @@ const getAds = asyncHandler(async (req, res) => {
 
 //-----------------------------------------------
 
+// @desc Update goal/ad with a choosen id
+// @route PUT /api/ads/:id
+// @access PRIVATE
+
+const updateAd = asyncHandler(async (req, res) => {
+    
+  const fetched_ad = await Ad.findById(req.params.id)
+  
+    if (!fetched_ad) {
+      res.status(400).send('Ad not found')
+    }
+  
+    // check for user
+    if (!req.user) {
+      res.status(401).send('User not found')
+    }
+  
+    // make sure the logged in user matches the goal user
+    if (fetched_ad.user.toString() !== req.user.id) {
+      res.status(401).send('User not authorized')
+    }
+  
+    const updatedAd = await fetched_ad.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    })
+    res.status(200).json(updatedAd)
+})
+
+//-----------------------------------------------
+
+// @desc Delete goal/ad
+// @route DELETE /api/ads/:id
+// @access PRIVATE
+
+const deleteAd = asyncHandler(async (req, res) => {
+    const ad = await Ad.findById(req.params.id)
+  
+    if (!ad) {
+      res.status(400).send('Ad not found')
+    }
+  
+    // check for user
+    if (!req.user) {
+      res.status(401).send('User not found')
+    }
+  
+    // make sure the logged in user matches the goal user
+    if (ad.user.toString() !== req.user.id) {
+      res.status(401).send('User not authorized')
+    }
+  
+    await ad.remove()
+  
+    res.status(200).json({ id: req.params.id })
+})
+
+//-----------------------------------------------
 
 module.exports = {
     setAd,
-    getAds
+    getAds,
+    updateAd,
+    deleteAd
 }

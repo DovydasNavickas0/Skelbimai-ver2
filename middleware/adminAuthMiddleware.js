@@ -1,10 +1,10 @@
 const asyncHandler = require('express-async-handler')
-const { getUser, notAuthorized } = require("./helpers/user")
+const { getUser, notAuthorizedMessage } = require("./helpers/user")
 
 const protectAdmin = asyncHandler(async (req, res, next) => {
     const { status, response } = await getUser(req);
 
-    if (status = 200){
+    if (status === 200){
         if (response.role === 'admin') {
             req.user = response;
             next()
@@ -12,8 +12,8 @@ const protectAdmin = asyncHandler(async (req, res, next) => {
             res.send(401, notAuthorizedMessage);
         }
     } else {
-        res.status(status).send(response);
+        res.status(404).send("error");
     }
 });
 
-module.exports = { protectAdmin }
+module.exports = { protectAdmin } 
